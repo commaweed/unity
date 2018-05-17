@@ -70,9 +70,35 @@ public class TileGridService {
    /// <param name="y"></param>
    /// <param name="on"></param>
    public void HighlightTile(int x, int y, bool on = true, Color? color = null) {
-      SpriteRenderer r = board.TileGrid.GetTileAt(x, y).GetComponent<SpriteRenderer>();
-      Color colorToUse = (color != null) ? (Color) color : r.color;
-      r.color = new Color(colorToUse.r, colorToUse.g, colorToUse.b, on ? 1f : 0f);
+      Tile tile = board.TileGrid.GetTileAt(x, y);
+     
+      if (tile != null) {
+         if (tile.TileType == TileType.Breakable) {
+            switch (((BreakableTile) tile).BreakableValue) {
+               case 0:
+                  board.ParticleService.ClearPieceFxAt(x, y);
+                  break;
+               case 1:
+                  board.ParticleService.BreakTileFxAt(x, y);
+                  break;
+               default:
+                  board.ParticleService.BreakDoubleTileFxAt(x, y);
+                  break;
+            }
+         } else {
+            board.ParticleService.ClearPieceFxAt(x, y);
+         }
+
+         //Color originalColor = tile.GetBorderColor();
+         //Color colorToUse = (color != null) ? (Color) color : originalColor;
+
+         //float alpha = 1f;
+         //if (!on && tile.TileType != TileType.Breakable) {
+         //   alpha = 0f;
+         //}
+
+         //tile.ChangeBorderColor(new Color(colorToUse.r, colorToUse.g, colorToUse.b, alpha));
+      }
    }
 
    public void HightlightTilesForPieces(List<GamePiece> gamePieces) {

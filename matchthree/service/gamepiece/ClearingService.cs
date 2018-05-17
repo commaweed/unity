@@ -15,13 +15,26 @@ public class ClearingService {
       this.board = board;
    }
 
+   public void BreakTileAt(int x, int y) {
+      Tile tile = board.TileGrid.GetTileAt(x, y); 
+      if (tile != null && tile.TileType == TileType.Breakable) {
+         ((BreakableTile) tile).BreakTile();
+      }
+   }
+
+   public void BreakTileAt(List<GamePiece> gamePieces) {
+      foreach (GamePiece piece in gamePieces) {
+         BreakTileAt(piece.X, piece.Y);
+      }
+   }
+
    public void ClearPieceAt(int x, int y) {
       GamePiece piece = board.GamePieceGrid.GetPieceAt(x, y);
       if (piece != null) {
          board.GamePieceGrid.SetPieceAt(x, y, null);
          MonoBehaviour.Destroy(piece.gameObject);
+         board.TileGridService.HighlightTile(x, y, false);
       }
-      board.TileGridService.HighlightTile(x, y, false);
    }
 
    public void ClearPieceAt(List<GamePiece> gamePieces) {
@@ -78,7 +91,10 @@ public class ClearingService {
 
       while (true) {
          ClearPieceAt(gamePieces);
+         BreakTileAt(gamePieces);
+
          yield return new WaitForSeconds(0.25f);
+
          movingPieces = CollapseColumn(gamePieces);
 
          while (!IsCollapsed(movingPieces)) {

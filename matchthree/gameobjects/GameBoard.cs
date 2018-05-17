@@ -35,10 +35,16 @@ public class GameBoard : MonoBehaviour {
    [SerializeField] private int width;
    [SerializeField] private int height;
    [SerializeField] private int borderSize;
+   [SerializeField] [Range(0f, 3f)] private float swapTime = 0.5f;
+
    [SerializeField] private GameObject tileNormalPrefab;
    [SerializeField] private GameObject tileObstaclelPrefab;
    [SerializeField] private GameObject[] gamePiecePrefabs;
-   [SerializeField] [Range(0f, 3f)] private float swapTime = 0.5f;
+
+   [SerializeField] private GameObject clearFxPrefab;
+   [SerializeField] private GameObject breakFxPrefab;
+   [SerializeField] private GameObject doubleBreakFxPrefab;
+
    [SerializeField] private StartingTile[] startingTiles;
 
    private void Awake() {
@@ -56,13 +62,19 @@ public class GameBoard : MonoBehaviour {
    }
 
    private void ValidateRequiredComponents() {
-      Assert.IsNotNull(tileNormalPrefab, "Missing TileNormal prefab; did you forget to add it in the inspector?");
-      Assert.IsNotNull(tileObstaclelPrefab, "Missing TileObstacle prefab; did you forget to add it in the inspector?");
+      // prefabs
+      Assert.IsNotNull(tileNormalPrefab, "Missing tileNormalPrefab prefab; did you forget to add it in the inspector?");
+      Assert.IsNotNull(tileObstaclelPrefab, "Missing tileObstaclelPrefab prefab; did you forget to add it in the inspector?");
       Assert.IsNotNull(gamePiecePrefabs, "Missing GamePieces[] prefabs; did you forget to add them in the inspector?");
       Assert.IsTrue(gamePiecePrefabs.Length > 0, "Invalid GamePieces[] prefabs; did you forget to set length > 0 in inspector?");
       foreach (GameObject gamePiecePrefab in gamePiecePrefabs) {
          Assert.IsNotNull(gamePiecePrefab, "Invalid gamePiecePrefab found in gamePiecePrefabs[]; did you forget to add one to the inspected?");
       }
+      Assert.IsNotNull(clearFxPrefab, "Missing clearFxPrefab prefab; did you forget to add it in the inspector?");
+      Assert.IsNotNull(breakFxPrefab, "Missing breakFxPrefab prefab; did you forget to add it in the inspector?");
+      Assert.IsNotNull(doubleBreakFxPrefab, "Missing doubleBreakFxPrefab prefab; did you forget to add it in the inspector?");
+
+      // data
       Assert.IsTrue(width > 0, "Invalid width; did you forget to indicate a valid game board width in the inspected?");
       Assert.IsTrue(height > 0, "Invalid height; did you forget to indicate a valid game board width in the inspected?");
       Assert.IsTrue(borderSize > 0, "Invalid borderSize; did you forget to indicate a valid game board width in the inspected?");
@@ -82,6 +94,7 @@ public class GameBoard : MonoBehaviour {
       this.ClearingService = new ClearingService(this);
       this.MatchingService = new MatchingService(this);
       this.MovementService = new MovementService(this);
+      this.ParticleService = new ParticleService(this);
    }
 
    private void InitializeGame() {
@@ -90,6 +103,7 @@ public class GameBoard : MonoBehaviour {
       GamePieceGridService.FillEmptyGamePieceGridSlots(10, 0.5f); // they are all empty in the beginning
    }
 
+   // data
    public TileGrid TileGrid { get; set; }
    public GamePieceGrid GamePieceGrid { get; set; }
    public int Width { get { return this.width; } }
@@ -100,15 +114,20 @@ public class GameBoard : MonoBehaviour {
    public bool DisplayDebugText { get { return this.displayDebugText; } }
    public StartingTile[] StartingTiles { get { return this.startingTiles; } }
 
-
+   // prefabs
    public GameObject TileNormalPrefab { get { return this.tileNormalPrefab; } }
    public GameObject TileObstaclelPrefab { get { return this.tileObstaclelPrefab; } }
    public GameObject[] GamePiecePrefabs { get { return this.gamePiecePrefabs; } }
+   public GameObject ClearFxPrefab { get { return this.clearFxPrefab; } }
+   public GameObject BreakFxPrefab { get { return this.breakFxPrefab; } }
+   public GameObject DoubleBreakFxPrefab { get { return this.doubleBreakFxPrefab; } }
 
+   // services
    public SceneService SceneService { get; set; }
    public TileGridService TileGridService { get; set; }
    public GamePieceGridService GamePieceGridService { get; set; }
    public ClearingService ClearingService { get; set; }
    public MatchingService MatchingService { get; set; }
    public MovementService MovementService { get; set; }
+   public ParticleService ParticleService { get; set; }
 }

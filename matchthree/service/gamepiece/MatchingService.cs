@@ -23,8 +23,10 @@ public class MatchingService  {
    public bool HasMatchOnBuild(int x, int y, int minLength = MIX_LENGTH) {
       // array (0,0) is bottom left so fills right then up (don't have to recheck what we already checked)
       List<GamePiece> leftMatches = FindMatches(x, y, MatchDirection.Left, minLength);
+      if (leftMatches.Count < minLength) leftMatches.Clear();
       List<GamePiece> downMatches = FindMatches(x, y, MatchDirection.Down, minLength);
-      return (leftMatches.Count > 0 || downMatches.Count > 0);
+      if (downMatches.Count < minLength) downMatches.Clear();
+      return (leftMatches.Count >= minLength || downMatches.Count >= minLength); // (leftMatches.Count > 0 || downMatches.Count > 0)
    }
 
    public List<GamePiece> FindMatchesAt(List<GamePiece> gamePieces, int minLength = MIX_LENGTH) {
@@ -65,8 +67,8 @@ public class MatchingService  {
             }
          }
 
-         if (matches.Count < minLength)
-            matches.Clear();
+         //if (matches.Count < minLength)
+         //   matches.Clear();
       }
 
       return matches;
@@ -129,7 +131,7 @@ public class MatchingService  {
    /// <param name="y"></param>
    /// <param name="matchDirection"></param>
    /// <returns></returns>
-   public static int ComputeTotalSearchCount(int height, int width, int x, int y, MatchDirection matchDirection) {
+   public static int ComputeTotalSearchCount(int width, int height, int x, int y, MatchDirection matchDirection) {
       switch (matchDirection) {
          case MatchDirection.Up:
             return height - y;
@@ -143,20 +145,20 @@ public class MatchingService  {
       throw new System.ArgumentException("Received unhandled matchDirection " + matchDirection);
    }
 
-   public void HightlightMatchesAt(int x, int y) {
-      board.TileGridService.HighlightTile(x, y, false); // turn off highlight (is this necessary)
-      foreach (GamePiece piece in board.MatchingService.FindMatchesAt(x, y)) {
-         // turn on highlight using the game piece color
-         board.TileGridService.HighlightTile(piece.X, piece.Y, true, piece.GetComponent<SpriteRenderer>().color);
-      }
-   }
+   //public void HightlightMatchesAt(int x, int y) {
+   //   board.TileGridService.HighlightTile(x, y, false); // turn off highlight (is this necessary)
+   //   foreach (GamePiece piece in board.MatchingService.FindMatchesAt(x, y)) {
+   //      // turn on highlight using the game piece color
+   //      board.TileGridService.HighlightTile(piece.X, piece.Y, true, piece.GetComponent<SpriteRenderer>().color);
+   //   }
+   //}
 
-   public void HighlightAllMatches() {
-      for (int x = 0; x < board.GamePieceGrid.Width; x++) {
-         for (int y = 0; y < board.GamePieceGrid.Height; y++) {
-            HightlightMatchesAt(x, y);
-         }
-      }
-   }
+   //public void HighlightAllMatches() {
+   //   for (int x = 0; x < board.GamePieceGrid.Width; x++) {
+   //      for (int y = 0; y < board.GamePieceGrid.Height; y++) {
+   //         HightlightMatchesAt(x, y);
+   //      }
+   //   }
+   //}
 
 }
