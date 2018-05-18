@@ -18,7 +18,7 @@ public class SceneService {
    /// Initialize the camera so that our tiles grid will fit with a border perfectly within the window.  I think we
    /// are assuming a 1080x1920 screen.
    /// </summary>
-   private void InitializeCamera() {
+   public void InitializeCamera() {
       Assert.IsNotNull(Camera.main, "Missing main camera; did you add a camera to the scene and Tag it as 'MainCamera'!");
 
       float ASPECT_RATIO = Screen.width / (float) Screen.height;

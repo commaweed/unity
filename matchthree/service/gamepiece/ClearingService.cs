@@ -32,8 +32,8 @@ public class ClearingService {
       GamePiece piece = board.GamePieceGrid.GetPieceAt(x, y);
       if (piece != null) {
          board.GamePieceGrid.SetPieceAt(x, y, null);
-         MonoBehaviour.Destroy(piece.gameObject);
-         board.TileGridService.HighlightTile(x, y, false);
+         board.TileGridService.HighlightTile(x, y, false); 
+         MonoBehaviour.Destroy(piece.gameObject);    
       }
    }
 
@@ -85,9 +85,9 @@ public class ClearingService {
       List<GamePiece> movingPieces = new List<GamePiece>();
       List<GamePiece> matches = new List<GamePiece>();
 
-      board.TileGridService.HightlightTilesForPieces(gamePieces);
+      //board.TileGridService.HightlightTilesForPieces(gamePieces);
 
-      yield return new WaitForSeconds(0.5f);
+      yield return new WaitForSeconds(0.1f);
 
       while (true) {
          ClearPieceAt(gamePieces);

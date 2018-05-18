@@ -22,9 +22,9 @@ public class MatchingService  {
 
    public bool HasMatchOnBuild(int x, int y, int minLength = MIX_LENGTH) {
       // array (0,0) is bottom left so fills right then up (don't have to recheck what we already checked)
-      List<GamePiece> leftMatches = FindMatches(x, y, MatchDirection.Left, minLength);
+      List<GamePiece> leftMatches = FindMatches(x, y, MatchDirection.Left);
       if (leftMatches.Count < minLength) leftMatches.Clear();
-      List<GamePiece> downMatches = FindMatches(x, y, MatchDirection.Down, minLength);
+      List<GamePiece> downMatches = FindMatches(x, y, MatchDirection.Down);
       if (downMatches.Count < minLength) downMatches.Clear();
       return (leftMatches.Count >= minLength || downMatches.Count >= minLength); // (leftMatches.Count > 0 || downMatches.Count > 0)
    }
@@ -43,7 +43,7 @@ public class MatchingService  {
       return hMatches.Union(vMatches).ToList();
    }
 
-   private List<GamePiece> FindMatches(int startX, int startY, MatchDirection matchDirection, int minLength = MIX_LENGTH) {
+   private List<GamePiece> FindMatches(int startX, int startY, MatchDirection matchDirection) {
       List<GamePiece> matches = new List<GamePiece>();
 
       GamePiece startPiece = board.GamePieceGrid.GetPieceAt(startX, startY);
@@ -60,23 +60,20 @@ public class MatchingService  {
             }
 
             GamePiece nextPiece = board.GamePieceGrid.GetPieceAt(nextX, nextY);
-            if (nextPiece != null && nextPiece.MatchType == startPiece.MatchType && !matches.Contains(nextPiece)) {
+            if (nextPiece != null && nextPiece.MatchType == startPiece.MatchType) { // do we really need contains??  && !matches.Contains(nextPiece)
                matches.Add(nextPiece);
             } else {
                break;
             }
          }
-
-         //if (matches.Count < minLength)
-         //   matches.Clear();
       }
 
       return matches;
    }
 
    private List<GamePiece> FindHorizontalMatches(int startX, int startY, int minLength = MIX_LENGTH) {
-      List<GamePiece> right = FindMatches(startX, startY, MatchDirection.Right, 2);
-      List<GamePiece> left = FindMatches(startX, startY, MatchDirection.Left, 2);
+      List<GamePiece> right = FindMatches(startX, startY, MatchDirection.Right);
+      List<GamePiece> left = FindMatches(startX, startY, MatchDirection.Left);
       List<GamePiece> matches = right.Union(left).ToList();
       if (matches.Count < minLength)
          matches.Clear();
@@ -84,8 +81,8 @@ public class MatchingService  {
    }
 
    private List<GamePiece> FindVerticalMatches(int startX, int startY, int minLength = MIX_LENGTH) {
-      List<GamePiece> up = FindMatches(startX, startY, MatchDirection.Up, 2);
-      List<GamePiece> down = FindMatches(startX, startY, MatchDirection.Down, 2);
+      List<GamePiece> up = FindMatches(startX, startY, MatchDirection.Up);
+      List<GamePiece> down = FindMatches(startX, startY, MatchDirection.Down);
       List<GamePiece> matches = up.Union(down).ToList();
       if (matches.Count < minLength)
          matches.Clear();

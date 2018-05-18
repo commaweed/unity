@@ -98,6 +98,7 @@ public class GameBoard : MonoBehaviour {
    }
 
    private void InitializeGame() {
+      SceneService.InitializeCamera();
       IsPlayerInputAllowed = true;
       TileGridService.PopulateTilesGrid();
       GamePieceGridService.FillEmptyGamePieceGridSlots(10, 0.5f); // they are all empty in the beginning
